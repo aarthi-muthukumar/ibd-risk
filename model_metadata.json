@@ -1,0 +1,73 @@
+{
+  "model_name": "UC ED Admission Risk Research Prototype",
+  "model_version": "1.0.0",
+  "endpoint": "Admission to the same hospital after the UC-related ED encounter (EDevent == 2)",
+  "positive_class": 1,
+  "cohort_definition": "K51 in any ICD-10-CM diagnosis position",
+  "development_data_source": "2019 Nationwide Emergency Department Sample (NEDS)",
+  "development_year": 2019,
+  "cohort_size": 39899,
+  "event_count": 22044,
+  "observed_event_prevalence": 0.5524950500012532,
+  "validation_approach": "Five-fold internal validation grouped by HOSP_ED",
+  "weighting_approach": "DISCWT used as sample weight for model fitting and reported validation metrics",
+  "auroc": 0.8454027552953947,
+  "average_precision": 0.8748233632132177,
+  "brier_score": 0.15910542947680278,
+  "included_predictors": [
+    "AGE", "FEMALE", "RACE", "ZIPINC_QRTL", "PAY1", "PL_NCHS", "AWEEKEND", "YEAR",
+    "HOSP_REGION", "HOSP_UR_TEACH", "HOSP_URCAT4", "HOSP_TRAUMA", "HOSP_CONTROL",
+    "DX_ANEMIA", "DX_DEHYDRATION", "DX_ELECTROLYTE_DISORDER", "DX_GASTROINTESTINAL_BLEEDING",
+    "DX_INTESTINAL_OBSTRUCTION", "DX_SEPSIS", "DX_VENOUS_THROMBOEMBOLISM",
+    "CMR_AIDS", "CMR_ALCOHOL", "CMR_ARTH", "CMR_CANCER_LEUK", "CMR_CANCER_LYMPH",
+    "CMR_CANCER_METS", "CMR_CANCER_NSITU", "CMR_CANCER_SOLID", "CMR_DEMENTIA", "CMR_DEPRESS",
+    "CMR_DIAB_CX", "CMR_DIAB_UNCX", "CMR_DRUG_ABUSE", "CMR_HTN_CX", "CMR_HTN_UNCX",
+    "CMR_LUNG_CHRONIC", "CMR_OBESE", "CMR_PERIVASC", "CMR_THYROID_HYPO", "CMR_THYROID_OTH"
+  ],
+  "leakage_exclusions": [
+    "EDevent", "DISP_ED", "DISP_IP", "DIED_VISIT", "derived outcomes", "length of stay",
+    "charge variables", "inpatient procedures", "transfer-out disposition", "KEY_ED",
+    "survey design variables as predictors", "APR-DRG severity", "APR-DRG mortality risk"
+  ],
+  "intended_use": "Investigational local research interface for estimating admission patterns observed among UC-related ED encounters in 2019 NEDS; not for admission or discharge decisions.",
+  "limitations": [
+    "Administrative encounter-level data may reflect billing and coding practices.",
+    "Some diagnosis and comorbidity fields may only be finalized after the encounter.",
+    "No vital signs, laboratory results, medications, imaging, disease activity, clinician assessment, or treatment response are included.",
+    "Admission reflects clinical need and healthcare-system factors.",
+    "The model does not measure biological UC severity or predict deterioration, future admission, readmission, treatment response, or need for biologic therapy.",
+    "Validation is internal and limited to 2019 NEDS.",
+    "Calibration by risk range, confidence intervals, and complete subgroup analyses remain unfinished.",
+    "External EHR validation and prospective testing are required before clinical use.",
+    "ZIPINC_QRTL is an area-level socioeconomic proxy and does not measure individual household income.",
+    "HCUP ZIP-income thresholds vary by year; the app uses the documented 2019 thresholds.",
+    "The public ACS ZCTA lookup approximates the original NEDS variable, which used proprietary Claritas ZIP estimates."
+  ],
+  "model_artifact_filename": "models/final_model.joblib",
+  "zip_income_derivation": {
+    "lookup_file": "data_reference/zip_income_quartile_2019.csv",
+    "area_definition": "2019 Census ZIP Code Tabulation Area (ZCTA)",
+    "income_source": "2019 American Community Survey 5-year detailed table B19013 estimate B19013_E001",
+    "income_source_url": "https://www2.census.gov/programs-surveys/acs/summary_file/2019/prototype/5YRData/acsdt5y2019-b19013.dat",
+    "threshold_source": "HCUP NEDS Description of Data Elements: ZIPINC_QRTL",
+    "threshold_source_url": "https://hcup-us.ahrq.gov/db/vars/zipinc_qrtl/nedsnote.jsp",
+    "thresholds_2019_usd": {
+      "quartile_1": "0-47999",
+      "quartile_2": "48000-60999",
+      "quartile_3": "61000-81999",
+      "quartile_4": "82000+"
+    },
+    "method": "Apply official 2019 HCUP dollar thresholds to valid 2019 ACS 5-year ZCTA median household income estimates.",
+    "compatibility_note": "Approximation only: NEDS ZIPINC_QRTL used Claritas ZIP-level estimates, while the local lookup uses public ACS ZCTA estimates. It may not reproduce the original NEDS category for every ZIP."
+  },
+  "descriptive_probability_bands": {
+    "basis": "Provisional interface ranges; aggregate development prediction quantiles were unavailable and no cohort was rescored.",
+    "lower_upper_bound": 0.35,
+    "intermediate_upper_bound": 0.65,
+    "labels": [
+      "Lower observed admission probability",
+      "Intermediate observed admission probability",
+      "Higher observed admission probability"
+    ]
+  }
+}
